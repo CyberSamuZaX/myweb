@@ -86,8 +86,6 @@
     </div>
 
     <script>
-        const OPENAI_API_KEY = "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"; // <-- API Key එක මෙතන දාන්න
-
         async function sendMessage() {
             const userInput = document.getElementById("user-input").value;
             if (userInput.trim() === "") return;
@@ -97,27 +95,23 @@
             document.getElementById("user-input").value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
+            // Sending the request to server.js API endpoint
             const response = await getAIResponse(userInput);
             chatBox.innerHTML += `<div class='message bot-message'><strong>Thero:</strong> ${response}</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
         async function getAIResponse(question) {
-            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            const response = await fetch("http://localhost:3000/chat", {  // Server URL for local hosting
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${OPENAI_API_KEY}`
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [{ role: "user", content: question }],
-                    max_tokens: 100
-                })
+                body: JSON.stringify({ message: question })
             });
-            
+
             const data = await response.json();
-            return data.choices[0].message.content;
+            return data.reply;
         }
     </script>
 </body>
